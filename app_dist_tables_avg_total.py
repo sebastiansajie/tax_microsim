@@ -37,7 +37,7 @@ def convert_df(df, cols):
             #row1.append(format_it(row[i]))
             #value_str = format_currency(row[j], 'INR', locale='en_IN').replace(u'\xa0', u' ')
             value_str = ind_currency(row[j])
-            row1.append(value_str)
+            row1._append(value_str)
         # replace the row with the changed list
         df1.loc[i] =  row1
         # reassemble the dataframe

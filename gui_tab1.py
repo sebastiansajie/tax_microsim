@@ -30,6 +30,9 @@ def initialize_vars(self):
     #self.grid()
     #self.createWidgets()
 
+    self.quit_button = tk.Button(self, text="Quit", command=self.master.destroy)
+    self.quit_button.pack()
+    
     self.reform={}
     self.selected_item = ""
     self.selected_value = ""

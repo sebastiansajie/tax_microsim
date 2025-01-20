@@ -76,7 +76,7 @@ def tab6(self):
     # #image = tk.PhotoImage(file="blank.png")
     # self.pic = tk.Label(self.TAB2,image=self.image)
     # self.pic.place(relx = 0.45, rely = 0.2, anchor = "nw")
-    # self.pic.image = self.image                                                          
+    # self.pic.image = self.image                                                
 
 def display_chart(self, event, global_vars):    
     def formatter(x, pos):
@@ -85,7 +85,8 @@ def display_chart(self, event, global_vars):
     self.image = ImageTk.PhotoImage(Image.open("blank.png"))
     self.pic = tk.Label(self.TAB6,image=self.image)
     self.pic.place(relx = 0.20, rely = 0.1, anchor = "nw")
-    
+    self.pic.image = self.image 
+   
     #self.selected_attribute_chart = self.attribute_selection.get()
     selected_chart = self.chart_selection.get()
     
@@ -108,6 +109,7 @@ def display_chart(self, event, global_vars):
     kakwani_list = global_vars['kakwani_list']      
     
     if (selected_chart==tax_type+'_revenue_projection'):
+        
         df = pd.read_csv(selected_chart+'.csv', index_col=0)           
         df = df.T
         
@@ -133,12 +135,14 @@ def display_chart(self, event, global_vars):
                  label='Reform')
         plt.legend()
         plt.title('Personal Income Tax forecast (in billions)')
-        pic_filename1 = "rev_forecast.png"
+        pic_filename1 = "rev_forecast.png"        
         plt.savefig(pic_filename1)
+        plt.close()
         self.image = ImageTk.PhotoImage(Image.open("rev_forecast.png"))
         self.pic = tk.Label(self.TAB6,image=self.image)
         self.pic.place(relx = 0.20, rely = 0.1, anchor = "nw")
-        self.pic.image = self.image             
+        self.pic.image = self.image
+        
     elif (selected_chart==tax_type+'_distribution_table'):
         df = pd.read_csv(selected_chart+'.csv', thousands=',') 
         df.drop('Unnamed: 0', axis=1, inplace=True)
@@ -154,6 +158,7 @@ def display_chart(self, event, global_vars):
         ax.set_ylabel("Tax Liability in millions")      
         pic_filename1 = "distribution_chart.png"
         plt.savefig(pic_filename1)
+        plt.close()
         self.image = ImageTk.PhotoImage(Image.open("distribution_chart.png"))
         self.pic = tk.Label(self.TAB6,image=self.image)
         self.pic.place(relx = 0.20, rely = 0.1, anchor = "nw")
@@ -172,6 +177,7 @@ def display_chart(self, event, global_vars):
         ax.set_ylabel("Tax Liability in millions")        
         pic_filename1 = "distribution_chart_top.png"
         plt.savefig(pic_filename1)
+        plt.close()
         self.image = ImageTk.PhotoImage(Image.open("distribution_chart_top.png"))
         self.pic = tk.Label(self.TAB6,image=self.image)
         self.pic.place(relx = 0.20, rely = 0.1, anchor = "nw")
@@ -187,7 +193,7 @@ def display_chart(self, event, global_vars):
         #print('df1 is ', df1)
         df1['pct1'] = df1[tax_collection_var+'_'+str(start_year)]/df1[tax_collection_var+'_'+str(start_year)].sum()
         df1['pct2'] = df1[tax_collection_var+'_ref_'+str(start_year)]/df1[tax_collection_var+'_ref_'+str(start_year)].sum()
-        print("df1['pct2'] is", df1['pct2'])
+        #print("df1['pct2'] is", df1['pct2'])
         labels1 = []
         for i in range(len(df1['pct1'])):
             if df1['pct1'][i]<0.05:
@@ -227,6 +233,7 @@ def display_chart(self, event, global_vars):
         fig.suptitle('Contribution to Tax Revenue by Income Groups in '+str(start_year))
         pic_filename1 = "tax_contribution.png"
         plt.savefig(pic_filename1)
+        plt.close()
         self.image = ImageTk.PhotoImage(Image.open("tax_contribution.png"))
         self.pic = tk.Label(self.TAB6,image=self.image)
         self.pic.place(relx = 0.20, rely = 0.1, anchor = "nw")
@@ -257,11 +264,13 @@ def display_chart(self, event, global_vars):
         ax.text(5, 4.5*(maxy/10), kakwani_text2, fontsize = 8)
         pic_filename1 = "etr.png"
         plt.savefig(pic_filename1)
+        plt.close()
         self.image = ImageTk.PhotoImage(Image.open("etr.png"))
         self.pic = tk.Label(self.TAB6,image=self.image)
         self.pic.place(relx = 0.20, rely = 0.1, anchor = "nw")
         self.pic.image = self.image       
-    
+
+
 def get_attribute_selection(self, event):
     selected_chart = self.chart_selection.get()
     tax_type = selected_chart[:3]
@@ -299,5 +308,5 @@ def get_attribute_selection(self, event):
         # self.pic.image = self.img3
         
  
-    
+   
     

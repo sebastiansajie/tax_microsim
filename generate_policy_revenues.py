@@ -17,6 +17,8 @@ from datetime import datetime
 from taxcalc.utils import *
 from taxcalc.display_funcs import *
 from PIL import Image,ImageTk
+import warnings
+warnings.simplefilter(action='ignore', category=FutureWarning)
 
 
 def make_float(item):
@@ -400,19 +402,17 @@ def generate_policy_revenues():
 
         df_tax12[tax_type]['All']['weight'] = df_tax12[tax_type]['All']['weight'+'_'+str(start_year)]
         df_tax12[tax_type]['All']['pre_tax_income'] = df_tax12[tax_type]['All'][income_measure[tax_type]+'_'+str(start_year)]        
-        df_tax12[tax_type]['All']['after_tax_income'] = (df_tax12[tax_type]['All'][income_measure[tax_type]+'_'+str(start_year)]-
-                                                         df_tax12[tax_type]['All'][tax_collection_var+'_'+str(start_year)])
-        df_tax12[tax_type]['All']['after_tax_income_ref'] = (df_tax12[tax_type]['All'][income_measure[tax_type]+'_ref_'+str(start_year)]-
-                                                         df_tax12[tax_type]['All'][tax_collection_var+'_ref_'+str(start_year)])      
+        df_tax12[tax_type]['All']['pitax_current_law'] = df_tax12[tax_type]['All'][tax_collection_var+'_'+str(start_year)]
+        df_tax12[tax_type]['All']['pitax_reform'] = df_tax12[tax_type]['All'][tax_collection_var+'_ref_'+str(start_year)]   
         gini = pd.DataFrame()
         gini['weight'] = df_tax12[tax_type]['All']['weight']
         gini['pre_tax_income'] = df_tax12[tax_type]['All']['pre_tax_income']
-        gini['after_tax_income'] = df_tax12[tax_type]['All']['after_tax_income']
-        gini['after_tax_income_ref'] = df_tax12[tax_type]['All']['after_tax_income_ref']
+        gini['pitax_current_law'] = df_tax12[tax_type]['All']['pitax_current_law']
+        gini['pitax_reform'] = df_tax12[tax_type]['All']['pitax_reform']
         
         #gini.to_csv('df_for_gini.csv', index=False)
         #print('df ', df)
-        varlist = ['pre_tax_income', 'after_tax_income', 'after_tax_income_ref']
+        varlist = ['pre_tax_income', 'pitax_current_law', 'pitax_reform']
         kakwani_list = []
         gini= gini.sort_values(by='pre_tax_income')
         #gini['weight'] = 100
@@ -425,7 +425,10 @@ def generate_policy_revenues():
         gini['percentage_cumul_income'] = gini['cumulative_total_income']/sum_total_income
         gini['height'] = gini['percentage_cumul_pop']-gini['percentage_cumul_income']
         gini1 = pd.DataFrame([[np.nan]*len(gini.columns)], columns=gini.columns)
-        gini = gini1.append(gini, ignore_index=True)
+        #print(gini)
+        #gini = gini1.append(gini, ignore_index=True)
+        gini = pd.concat([gini1, gini], axis=0)      
+        #print('gini after', gini)
         gini['percentage_cumul_pop']= gini['percentage_cumul_pop'].fillna(0)
         gini['percentage_cumul_income']= gini['percentage_cumul_income'].fillna(0)
         gini['height']= gini['height'].fillna(0)
@@ -439,13 +442,16 @@ def generate_policy_revenues():
         i=0
         for var in varlist[1:]:
             gini = gini[1:]
+            #print('gini second ', var, ' ',  gini)
             gini['total_income'] = gini['weight']*gini[var]
             gini['cumulative_total_income']= np.cumsum(gini['total_income'])
             sum_total_income = sum(gini['total_income'])
             gini['percentage_cumul_income'] = gini['cumulative_total_income']/sum_total_income
             gini['height'] = gini['percentage_cumul_pop']-gini['percentage_cumul_income']            
             gini1 = pd.DataFrame([[np.nan]*len(gini.columns)], columns=gini.columns)
-            gini = gini1.append(gini, ignore_index=True)
+            #gini = gini1.append(gini, ignore_index=True)
+            gini = pd.concat([gini1, gini], axis=0)
+            #print('gini second after ', var, ' ', gini)
             gini['percentage_cumul_pop']= gini['percentage_cumul_pop'].fillna(0)
             gini['percentage_cumul_income']= gini['percentage_cumul_income'].fillna(0)
             gini['height']= gini['height'].fillna(0)
@@ -550,6 +556,7 @@ def generate_policy_revenues():
             dt_tax_all12 = dt_tax_all12.reset_index()
             dt_tax_all34 = dt_tax_all34.reset_index()
             # ETR is calculated for the Start Year
+            #print(dt_percentile[tax_type]['All'])
             dt_percentile[tax_type]['All']['ETR'] = dt_percentile[tax_type]['All'][tax_collection_var+'_'+str(start_year)]/dt_percentile[tax_type]['All'][income_measure[tax_type]+'_'+str(start_year)]            
             dt_percentile[tax_type]['All']['ETR_ref'] = dt_percentile[tax_type]['All'][tax_collection_var+'_ref_'+str(start_year)]/dt_percentile[tax_type]['All'][income_measure[tax_type]+'_ref_'+str(start_year)]            
             dt_percentile[tax_type]['All'].update(dt_percentile[tax_type]['All'].select_dtypes(include=np.number).applymap('{:,.4f}'.format))            

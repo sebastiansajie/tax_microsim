@@ -107,9 +107,8 @@ def display_chart(self, event, global_vars):
     start_year= global_vars['start_year']
     data_start_year= global_vars['data_start_year']
     kakwani_list = global_vars['kakwani_list']      
-    
-    if (selected_chart==tax_type+'_revenue_projection'):
-        
+   
+    if (selected_chart==tax_type+'_revenue_projection'):        
         df = pd.read_csv(selected_chart+'.csv', index_col=0)           
         df = df.T
         
@@ -137,7 +136,7 @@ def display_chart(self, event, global_vars):
         plt.title('Personal Income Tax forecast (in billions)')
         pic_filename1 = "rev_forecast.png"        
         plt.savefig(pic_filename1)
-        plt.close()
+        plt.close('all')
         self.image = ImageTk.PhotoImage(Image.open("rev_forecast.png"))
         self.pic = tk.Label(self.TAB6,image=self.image)
         self.pic.place(relx = 0.20, rely = 0.1, anchor = "nw")
@@ -158,12 +157,12 @@ def display_chart(self, event, global_vars):
         ax.set_ylabel("Tax Liability in millions")      
         pic_filename1 = "distribution_chart.png"
         plt.savefig(pic_filename1)
-        plt.close()
+        plt.close('all')
         self.image = ImageTk.PhotoImage(Image.open("distribution_chart.png"))
         self.pic = tk.Label(self.TAB6,image=self.image)
         self.pic.place(relx = 0.20, rely = 0.1, anchor = "nw")
         self.pic.image = self.image
-    
+        
     elif (selected_chart==tax_type+'_distribution_table_top1'):
         df = pd.read_csv(selected_chart+'.csv', thousands=',') 
         df.drop('Unnamed: 0', axis=1, inplace=True)
@@ -177,7 +176,7 @@ def display_chart(self, event, global_vars):
         ax.set_ylabel("Tax Liability in millions")        
         pic_filename1 = "distribution_chart_top.png"
         plt.savefig(pic_filename1)
-        plt.close()
+        plt.close('all')
         self.image = ImageTk.PhotoImage(Image.open("distribution_chart_top.png"))
         self.pic = tk.Label(self.TAB6,image=self.image)
         self.pic.place(relx = 0.20, rely = 0.1, anchor = "nw")
@@ -233,7 +232,7 @@ def display_chart(self, event, global_vars):
         fig.suptitle('Contribution to Tax Revenue by Income Groups in '+str(start_year))
         pic_filename1 = "tax_contribution.png"
         plt.savefig(pic_filename1)
-        plt.close()
+        plt.close('all')
         self.image = ImageTk.PhotoImage(Image.open("tax_contribution.png"))
         self.pic = tk.Label(self.TAB6,image=self.image)
         self.pic.place(relx = 0.20, rely = 0.1, anchor = "nw")
@@ -264,11 +263,12 @@ def display_chart(self, event, global_vars):
         ax.text(5, 4.5*(maxy/10), kakwani_text2, fontsize = 8)
         pic_filename1 = "etr.png"
         plt.savefig(pic_filename1)
-        plt.close()
+        plt.close('all')
         self.image = ImageTk.PhotoImage(Image.open("etr.png"))
         self.pic = tk.Label(self.TAB6,image=self.image)
         self.pic.place(relx = 0.20, rely = 0.1, anchor = "nw")
         self.pic.image = self.image       
+    
 
 
 def get_attribute_selection(self, event):
